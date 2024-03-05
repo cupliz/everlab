@@ -1,0 +1,61 @@
+// This is your Prisma schema file, learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("SUPABASE_DB_URL")
+}
+
+model User {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String
+}
+
+model Conditions {
+  id                 Int     @id @default(autoincrement())
+  name               String
+  diagnostic_metrics String?
+}
+
+model DiagnosticGroups {
+  id                 Int     @id @default(autoincrement())
+  name               String
+  diagnostics        String?
+  diagnostic_metrics String?
+}
+
+model DiagnosticMetrics {
+  id                Int     @id @default(autoincrement())
+  name              String
+  oru_sonic_codes   String?
+  diagnostic        String?
+  diagnostic_groups String?
+  oru_sonic_units   String?
+  units             String?
+  min_age           Int?    @default(0)
+  max_age           Int?    @default(200)
+  gender            String  @default("Any")
+  standard_lower    Float?
+  standard_higher   Float?
+  everlab_lower     Float?
+  everlab_higher    Float?
+}
+
+model Diagnostic {
+  id                 Int     @id @default(autoincrement())
+  name               String
+  diagnostic_groups  String?
+  diagnostic_metrics String?
+}
+
+model Files {
+  key      String  @id @default(cuid())
+  label    String?
+  original String
+  type     String
+  location String?
+}

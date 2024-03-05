@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer utilities {
+  .wrapper {
+    @apply lg:max-w-[1440px] w-full mx-auto px-4;
+  }
+}
