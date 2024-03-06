@@ -41,7 +41,7 @@ export default function UploadFile() {
         <span
           className={`${isDragActive ? 'text-suplementary' : 'text-neutral-800'}  group-hover:text-suplementary`}
         >
-          {isDragActive ? 'Drop Disini Untuk ' : ''} Upload ORU file (.txt)
+          {isDragActive ? 'Drop here to ' : ''} Upload ORU file (.txt)
         </span>
       </div>
       <div className='flex gap-10 my-10'>

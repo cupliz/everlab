@@ -1,6 +1,6 @@
 'use client'
 import Header from '../components/Header'
-import ParseORU from './ParseORU'
+import PatientObservations from './PatientObservations'
 import UploadFile from './UploadFile'
 
 export default function Page(): JSX.Element {
@@ -9,7 +9,7 @@ export default function Page(): JSX.Element {
       <Header />
       <div className='wrapper'>
         <UploadFile />
-        <ParseORU />
+        <PatientObservations />
       </div>
     </>
   )

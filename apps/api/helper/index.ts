@@ -1,30 +1,45 @@
 import * as dayjs from 'dayjs';
 
-export const inRange = (value, min = 0, max) => {
-  return (value - min) * (value - max) <= 0;
-};
+export const categorizeValue = (value, range) => {
+  let min = 0.0;
+  let max = 0.0;
+  if (range.includes('>')) {
+    const [splitMin, splitMax] = range.split('>');
+    max = splitMax;
+  }
+  if (range.includes('<')) {
+    const [splitMin, splitMax] = range.split('<');
+    min = splitMax;
+  }
+  if (range.includes('-')) {
+    const [splitMin, splitMax] = range.split('-');
+    min = splitMin;
+    max = splitMax;
+  }
 
-export const categorizeValue = (value, min, max) => {
-  // console.log(value, min, max);
-  if (parseFloat(value) < parseFloat(min)) {
-    return 'Too Low';
-  }
-  if (parseFloat(value) > parseFloat(max)) {
-    return 'Too High';
-  }
-  const percentage =
-    ((parseFloat(value) - parseFloat(min)) /
-      (parseFloat(max) - parseFloat(min))) *
-    100;
-  const lowThreshold = 30;
-  const mediumThreshold = 70;
-  if (percentage <= lowThreshold) {
-    return 'Low';
-  } else if (percentage <= mediumThreshold) {
-    return 'Medium';
+  let Category = '';
+  let Status = '';
+  // console.log(value, range, { min, max });
+  if (value < min) {
+    Status = 'Abnormal';
+    Category = 'Too Low';
+  } else if (value > max) {
+    Status = 'Abnormal';
+    Category = 'Too High';
   } else {
-    return 'High';
+    Status = 'Normal';
+    const percentage = ((value - min) / (max - min)) * 100;
+    const lowThreshold = 30;
+    const mediumThreshold = 70;
+    if (percentage <= lowThreshold) {
+      Category = 'Low';
+    } else if (percentage <= mediumThreshold) {
+      Category = 'Medium';
+    } else {
+      Category = 'High';
+    }
   }
+  return { Category, Status };
 };
 
 export const getDetailDoctor = (data) => {

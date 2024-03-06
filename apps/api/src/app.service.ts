@@ -13,7 +13,6 @@ import {
   getNatureOfAbnormalTest,
   getObservationIdentifier,
   getObservationResultStatus,
-  inRange,
 } from '@/helper';
 import { env } from './config';
 
@@ -147,29 +146,21 @@ export class AppService {
     const AdditionalInformation = [];
     for (const [index, data] of OBX.entries()) {
       // if (index === 0) {
-      let min = 0;
-      let max = 0;
       if (data.Field2[0] === 'NM') {
-        if (data.Field7[0].includes('-')) {
-          const [splitMin, splitMax] = data.Field7[0].split('-');
-          min = splitMin;
-          max = splitMax;
+        if (data.Field3[1] === 'S C-Reactive Protein:') {
+          console.log(data.Field3[1], data.Field5[0]);
         }
-        if (data.Field7[0].includes('>')) {
-          const [splitMin, splitMax] = data.Field7[0].split('>');
-          max = splitMax;
-        }
-        if (data.Field7[0].includes('<')) {
-          const [splitMin, splitMax] = data.Field7[0].split('<');
-          min = splitMax;
-        }
+        const { Status, Category } = categorizeValue(
+          data.Field5[0],
+          data.Field7[0],
+        );
         const obsResult = {
           Test: data.Field3[1],
           Result: `${data.Field5[0]} ${data.Field6[0]}`,
           NormalRange: `${data.Field7[0]} ${data.Field6[0]}`,
           TestDate: getDate(data.Field14[0]),
-          Status: inRange(data.Field5[0], min, max) ? 'Normal' : 'Abnormal',
-          Category: categorizeValue(data.Field5[0], min, max),
+          Status,
+          Category,
         };
         ObservationResults.push(obsResult);
       }
