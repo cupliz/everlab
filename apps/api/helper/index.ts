@@ -42,6 +42,31 @@ export const categorizeValue = (value, range) => {
   return { Category, Status };
 };
 
+export const categorizeByEverlab = (value, min, max) => {
+  let Category = '';
+  let Status = '';
+  if (value < min) {
+    Status = 'Abnormal';
+    Category = 'Too Low';
+  } else if (value > max) {
+    Status = 'Abnormal';
+    Category = 'Too High';
+  } else {
+    Status = 'Normal';
+    const percentage = ((value - min) / (max - min)) * 100;
+    const lowThreshold = 30;
+    const mediumThreshold = 70;
+    if (percentage <= lowThreshold) {
+      Category = 'Low';
+    } else if (percentage <= mediumThreshold) {
+      Category = 'Medium';
+    } else {
+      Category = 'High';
+    }
+  }
+  return { Category, Status };
+};
+
 export const getDetailDoctor = (data) => {
   return {
     License: data[0],

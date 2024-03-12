@@ -6,6 +6,7 @@ import * as dayjs from 'dayjs';
 import { randomUUID } from 'crypto';
 import OpenAI from 'openai';
 import {
+  categorizeByEverlab,
   categorizeValue,
   getDate,
   getDateTime,
@@ -81,9 +82,9 @@ export class AppService {
       );
       oruFiles = fileData.split(/(?=MSH)/g);
     }
-    for (const [index, ORUstring] of oruFiles.entries()) {
+    for (const [i, ORUstring] of oruFiles.entries()) {
       const ORUparsed = this.parseHL7(ORUstring);
-      const obj1 = this.getSummary(ORUparsed);
+      const obj1 = await this.getSummary(ORUparsed);
       result.push(obj1);
       // const obj2 = await this.getSummaryGPT(ORUstring);
       // const obj3 = {
@@ -95,6 +96,7 @@ export class AppService {
       //   ObservationResult: this.getObservationResult(ORUparsed),
       // };
     }
+    // console.log(result[0].ObservationResults.map((x) => x.Test));
     return result;
   }
 
@@ -132,7 +134,7 @@ export class AppService {
     return result;
   }
 
-  getSummary(parsedData) {
+  async getSummary(parsedData) {
     const PID = parsedData['PID'][0];
     const PV1 = parsedData['PV1'][0];
     const ORC = parsedData['ORC'][0];
@@ -147,13 +149,23 @@ export class AppService {
     for (const [index, data] of OBX.entries()) {
       // if (index === 0) {
       if (data.Field2[0] === 'NM') {
+        const metric = await this.prisma.diagnosticMetrics.findFirst({
+          select: { everlab_lower: true, everlab_higher: true },
+          where: { oru_sonic_codes: { contains: data.Field3[1] } },
+        });
         if (data.Field3[1] === 'S C-Reactive Protein:') {
           console.log(data.Field3[1], data.Field5[0]);
         }
-        const { Status, Category } = categorizeValue(
+        // const { Status, Category } = categorizeValue(
+        //   data.Field5[0],
+        //   data.Field7[0],
+        // );
+        const { Status, Category } = categorizeByEverlab(
           data.Field5[0],
-          data.Field7[0],
+          metric?.everlab_lower,
+          metric?.everlab_higher,
         );
+
         const obsResult = {
           Test: data.Field3[1],
           Result: `${data.Field5[0]} ${data.Field6[0]}`,
