@@ -1,16 +1,3 @@
-# Overview
-
-One of features Everlab doctors use in the backend is being able to automatically interpret pathology report data that arrives in the HL7/ORU format.
-
-We are going to give you some database tables in CSV format as well as some sample ORU files and ask you to build a single page application that lets a doctor upload an ORU file and see high-risk results. This should be a full-stack web application using any technology of your choice. Things we care about are:
-
-- Speed - how quickly can you build this?
-- Accuracy - is the output correct?
-- UX/Product - is this easy to use for a doctor?
-- Quality - did you make good technical decisions?
-
-We will leave what to display and how in the front-end up to you. Just keep in mind the user (and their goal) of easily interpreting someone’s report data.
-
 # Context
 
 There a 4 CSV files attached below. Each file represents a table as following
@@ -34,14 +21,3 @@ diagnostics.csv
 diagnostic_groups.csv
 
 MP826520.oru.txt - note this has lines separated by carriage returns. Your editor may make changes that break it
-
-# Task
-
-We recommend approaching this task by doing the following
-
-- Import the CSV files into a relational database with the correct schema, foreign keys, and values.
-    - Please use a docker container to host the database using docker-compose locally
-- Write an API to parse the ORU file into the individual test items and result values
-- Write code to calculate the abnormal test values given our diagnostic_metrics table and the relevant conditions
-    - If there is no relevant match then don’t return the result
-- Write a front-end that lets a doctor upload an ORU file and see the relevant data.
